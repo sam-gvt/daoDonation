@@ -21,6 +21,7 @@ contract VoteMajority is AccessControlEnumerable {
         string localisation;
         string officialWebsite;
         bool isRegister;
+        bool onStandBy;
     }
 
     mapping(address => InfosAssociation) public associations;
@@ -37,7 +38,6 @@ contract VoteMajority is AccessControlEnumerable {
         string name;
         uint totalVotes;
         uint majorityThreshold;
-        bool isAccepted;
         bool isActive;
     }
 
@@ -66,10 +66,22 @@ contract VoteMajority is AccessControlEnumerable {
     
     function createSession(address _addressSession, string memory _name) external onlyRole(ADMIN_ROLE) {
         require(!sessions[_addressSession].isActive, "Session already register");
-        require(keccak256(bytes(_name)) == keccak256(bytes('association')) || keccak256(bytes(_name)) == keccak256(bytes('admin')), "Name is unknown choose association or admins");
-        sessions[_addressSession] = Session(_name, 0, totalAdmins, false, true);
+        require(keccak256(bytes(_name)) == keccak256(bytes('association')) || 
+                keccak256(bytes(_name)) == keccak256(bytes('admin')) || 
+                keccak256(bytes(_name)) == keccak256(bytes('revokeAssociation')), "Name is unknown choose association or admins");
+                
+                
+        if(keccak256(bytes(_name)) == keccak256(bytes('association'))) {
+            require(associations[_addressSession].onStandBy, "Association has not applied for registration");
+        }
+        else if(keccak256(bytes(_name)) == keccak256(bytes('revokeAssociation'))) {
+            require(associations[_addressSession].isRegister, "Association is not register");
+        }
+
+        sessions[_addressSession] = Session(_name, 0, totalAdmins, true);
     }
 
+ 
     function vote(address payable _addrSession, bool _vote) external onlyRole(ADMIN_ROLE) {
         require(sessions[_addrSession].isActive, "Voting is finished.");
         require(!sessionAdmin[_addrSession][msg.sender].hasVoted, "You have already voted.");
@@ -101,17 +113,32 @@ contract VoteMajority is AccessControlEnumerable {
 
         bool result = yesVotes > noVotes;
 
-        sessions[_addrSession].isActive = false;
-        sessions[_addrSession].isAccepted =  result;
-
+        bytes32 sessionName = keccak256(bytes(sessions[_addrSession].name));
         if(result) {
-            if(keccak256(bytes(sessions[_addrSession].name)) == keccak256(bytes('admin'))) {
+            if(sessionName == keccak256(bytes('admin'))) {
                 _grantRole(ADMIN_ROLE, _addrSession);
-            } else if(keccak256(bytes(sessions[_addrSession].name)) == keccak256(bytes('association'))) {
+            } else if(sessionName == keccak256(bytes('association'))) {
                 associationAccepted.push(_addrSession);
-                _deleteAssociationOnStandBy(_addrSession);
+                associations[_addrSession].isRegister = true;
+            } else if(sessionName == keccak256(bytes('revokeAssociation'))) {
+                associations[_addrSession].isRegister = false;
             }
         }
+
+        if(sessionName == keccak256(bytes('association'))) {
+            associations[_addrSession].onStandBy = false;
+            _deleteAssociationOnStandBy(_addrSession);
+        }
+
+        // reset session
+        sessions[_addrSession] = Session('', 0, totalAdmins, false);
+
+       // reset vote admin
+       for(uint i; i< totalAdmins; i++) {
+            address admin = getRoleMember(ADMIN_ROLE, i);
+            sessionAdmin[_addrSession][admin].hasVoted = false;
+            sessionAdmin[_addrSession][admin].hasApproved = false;
+       }
     }
 
     function _deleteAssociationOnStandBy(address _address) private {
@@ -127,19 +154,5 @@ contract VoteMajority is AccessControlEnumerable {
             }
         }
     }
-
-    // function seeArray() public view returns(address[] memory) {
-    //     return associationsOnStandby;
-    // }
-
-      
  
-
-    // function revokeAssociation(address _address) external onlyRole(ADMIN_ROLE) {
-    //     voteMajorityContract.createSession(_address, 'Revoke association');
-    // }
-
-    // function addAdmin(address _address) external onlyRole(ADMIN_ROLE) {
-    //     voteMajorityContract.createSession(_address, 'Add admin');
-    // } 
 }
