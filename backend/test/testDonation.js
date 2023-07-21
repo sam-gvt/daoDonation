@@ -47,6 +47,17 @@ describe("Donation Contract Test", function () {
          it('I can apply to register my association', async function() {
             expect((await _hardhatContract.associationsOnStandby(0)).toLowerCase()).to.equal(_otherAccount.address.toLowerCase());
          })
+
+         it("I can register association with empty informations", async () => {
+             await expect(_hardhatContract.registerNewAssociation(
+                _addr3,
+                '',
+                'activity',
+                'goal',
+                '',
+                'officialWebsite'
+            )).to.be.revertedWith("Empty fields are not allowed");
+        });
  
          it('Revert if I add association existing', async function() {
              
@@ -166,9 +177,6 @@ describe("Donation Contract Test", function () {
             expect(await _hardhatContract.hasRole('0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775', _otherAccount)).to.equal(false);
          })
 
-        //  it('When the last admin has voted revoke admin, if result is true : revoke it', async function() {
-
-        //  })
 
     })
 

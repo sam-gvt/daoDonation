@@ -43,6 +43,12 @@ contract Donation is VoteMajority {
     ) external {
         require(!associations[_addr].onStandBy, "Your request is pending");
         require(associationsOnStandby.length < 100, 'Too many requests please try later');
+        require(keccak256(bytes(_name)) != keccak256(bytes('')) &&
+                keccak256(bytes(_activity)) != keccak256(bytes('')) &&
+                keccak256(bytes(_goal)) != keccak256(bytes('')) &&
+                keccak256(bytes(_localisation)) != keccak256(bytes('')) &&
+                keccak256(bytes(_officialWebsite)) != keccak256(bytes('')), 'Empty fields are not allowed');
+        
         associationsOnStandby.push(_addr);
         associations[_addr] = InfosAssociation(_name, _activity, _goal, _localisation, _officialWebsite, false, true);
     }

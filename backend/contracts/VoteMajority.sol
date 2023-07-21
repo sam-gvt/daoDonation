@@ -48,7 +48,7 @@ contract VoteMajority is AccessControlEnumerable {
     // a session is define by an address
     mapping(address => Session) public sessions;
 
-    // session address => admin address => ses infos
+    // session address => admin address => his infos
     mapping(address => mapping(address => Admin)) public sessionAdmin;
 
 
