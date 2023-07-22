@@ -8,16 +8,41 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 const inter = Inter({ subsets: ['latin'] })
 
-import { WagmiConfig, createConfig, hardhat } from 'wagmi'
-import { createPublicClient, http } from 'viem'
+import { WagmiConfig, createConfig } from 'wagmi'
+import { hardhat, goerli } from 'wagmi/chains';
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
+
+
+import { configureChains } from '@wagmi/core'
  
+
+const { chains, publicClient } = configureChains(
+  [hardhat, goerli],
+  [
+    jsonRpcProvider({
+      rpc: () => ({
+        http: "http://127.0.0.1:8545"
+      }),
+    })
+  ]
+);
 const config = createConfig({
   autoConnect: false,
-  publicClient: createPublicClient({
-    chain: hardhat,
-    transport: http("localhost:3000")
-  }),
+  publicClient,
+  connectors: [
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    })
+  ]
 })
+
+
+
 
 export default function RootLayout({ children }) {
   return (

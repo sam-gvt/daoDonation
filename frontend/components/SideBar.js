@@ -25,8 +25,9 @@ import Link from 'next/link';
 
 const LinkItems = [
   { name: 'Make Donation', icon: FiHome, url: '/' },
-  { name: 'Associations', icon: FiTrendingUp, url: 'associations' },
-  { name: 'About us', icon: FiCompass, url: 'about' },
+  { name: 'Associations', icon: FiTrendingUp, url: '/associations' },
+  { name: 'My Donations', icon: FiTrendingUp, url: '/myDonations' },
+  { name: 'About us', icon: FiCompass, url: '/about' },
 ];
 
 export default function SimpleSidebar({ children }) {

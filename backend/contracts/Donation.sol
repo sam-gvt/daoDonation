@@ -13,7 +13,7 @@ contract Donation is VoteMajority {
     event DonationToAssociation(address donor, address addrAssociation, uint mount);
 
 
-    // ################# Association ###################76
+    // ################# Association #####################
 
     function setAssociationForm(
         string memory _name,
@@ -50,7 +50,7 @@ contract Donation is VoteMajority {
                 keccak256(bytes(_officialWebsite)) != keccak256(bytes('')), 'Empty fields are not allowed');
         
         associationsOnStandby.push(_addr);
-        associations[_addr] = InfosAssociation(_name, _activity, _goal, _localisation, _officialWebsite, false, true);
+        associations[_addr] = InfosAssociation(_addr, _name, _activity, _goal, _localisation, _officialWebsite, false, true);
     }
 
 
@@ -65,6 +65,18 @@ contract Donation is VoteMajority {
             if(associations[addressAssociation].isRegister){
                 _associations[i] = _fetchAssociation(addressAssociation);
             }
+        }
+
+        return _associations;
+    }
+
+    function getAllAssociationsOnStandBy() external view returns(InfosAssociation[] memory) {
+        InfosAssociation[] memory _associations = new InfosAssociation[](associationsOnStandby.length);
+
+        for (uint i = 0; i < associationsOnStandby.length; i++) {
+            address addressAssociation = associationsOnStandby[i];
+            _associations[i] = _fetchAssociationOnStandBy(addressAssociation);
+            
         }
 
         return _associations;
@@ -101,6 +113,11 @@ contract Donation is VoteMajority {
 
     function _fetchAssociation(address _address) public view returns (InfosAssociation memory) {
         require( associations[_address].isRegister, 'Address is unknown or banned');
+        return associations[_address];
+    }
+
+    function _fetchAssociationOnStandBy(address _address) public view returns (InfosAssociation memory) {
+        require( associations[_address].onStandBy, 'Address is unknown');
         return associations[_address];
     }
 

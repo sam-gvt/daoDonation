@@ -15,6 +15,7 @@ contract VoteMajority is AccessControlEnumerable {
     // ------------------ ASSOCIATIONS INFORMATIONS --------------------- //
 
     struct InfosAssociation {
+        address addr;
         string name;
         string activity;
         string goal;

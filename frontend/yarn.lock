@@ -254,6 +254,13 @@
   dependencies:
     "@chakra-ui/shared-utils" "2.0.5"
 
+"@chakra-ui/icons@^2.1.0":
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@chakra-ui/icons/-/icons-2.1.0.tgz#52677939e02f9d6b902bd2c2931e5f18d3c8b523"
+  integrity sha512-pGFxFfQ/P5VnSRnTzK8zGAJxoxkxpHo/Br9ohRZdOpuhnIHSW7va0P53UoycEO5/vNJ/7BN0oDY0k9qurChcew==
+  dependencies:
+    "@chakra-ui/icon" "3.1.0"
+
 "@chakra-ui/image@2.1.0":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@chakra-ui/image/-/image-2.1.0.tgz#6c205f1ca148e3bf58345b0b5d4eb3d959eb9f87"
@@ -2222,6 +2229,11 @@ dijkstrajs@^1.0.1:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/dijkstrajs/-/dijkstrajs-1.0.3.tgz#4c8dbdea1f0f6478bff94d9c49c784d623e4fc23"
   integrity sha512-qiSlmBq9+BCdCA/L46dw8Uy93mloxsPSbwnm5yrKn2vMPiy8KyAskTF6zuV/j5BMsmOGZDPs7KjU+mjb670kfA==
+
+dotenv@^16.3.1:
+  version "16.3.1"
+  resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-16.3.1.tgz#369034de7d7e5b120972693352a3bf112172cc3e"
+  integrity sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==
 
 duplexify@^4.1.2:
   version "4.1.2"

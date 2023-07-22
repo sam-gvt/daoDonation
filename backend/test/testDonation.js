@@ -48,6 +48,14 @@ describe("Donation Contract Test", function () {
             expect((await _hardhatContract.associationsOnStandby(0)).toLowerCase()).to.equal(_otherAccount.address.toLowerCase());
          })
 
+         it('I can see all associations onStandBy', async function() {
+            expect((await _hardhatContract.getAllAssociationsOnStandBy()).length).to.equal(1);
+        })
+
+        it('I can see an association onStandBy', async function() {
+            expect((await _hardhatContract._fetchAssociationOnStandBy(_otherAccount)).length).to.equal(8);
+        })
+
          it("I can register association with empty informations", async () => {
              await expect(_hardhatContract.registerNewAssociation(
                 _addr3,
@@ -262,6 +270,7 @@ describe("Donation Contract Test", function () {
 
             expect(await _hardhatContract.associations(_otherAccount)).to.deep.equal(
                [ 
+                    _otherAccount.address,
                     'otherName',
                     'OtherActivity',
                     'otherGoal',
@@ -276,7 +285,8 @@ describe("Donation Contract Test", function () {
                 
         it('I can see the informations about an association', async function() {
             expect(await _hardhatContract._fetchAssociation(_otherAccount)).to.deep.equal(
-                [ 
+                [
+                    _otherAccount.address,
                     'name',
                     'activity',
                     'goal',
