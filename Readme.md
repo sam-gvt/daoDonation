@@ -39,7 +39,7 @@ Deployed contract Goerli address: https://goerli.etherscan.io/address/
 
 Video : 
 
-Vercel app :
+Vercel app : https://dao-donation.vercel.app/
 
 
 ## Author

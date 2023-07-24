@@ -272,7 +272,7 @@ if(isAdmin){
             { isLoading && (
                 <Heading textAlign="center" marginTop="70px">Loading ...</Heading>
             )}
-          {(displayAdmin && adminOnStandBy.length > 0) && (
+          {(displayAdmin && adminOnStandBy  != 0) && (
             <>
               <Box w='70%' m='auto' mt='100px'>
                 <Box>
@@ -282,13 +282,11 @@ if(isAdmin){
                   <Button colorScheme='green' onClick={yesVote} mr='10px'>Yes</Button>
                   <Button colorScheme='red' onClick={noVote}>No</Button> 
                 </Box>
-                </Box>
-          
-                 
+                </Box>  
             </>
             
           )}
-          {(displayAdmin && adminOnStandBy.length == 0) && (
+          {(displayAdmin && adminOnStandBy == 0) && (
             <>
               <form onSubmit={submitAdmin}>
                 <FormControl isRequired w='70%' m='auto' pt='50px'>

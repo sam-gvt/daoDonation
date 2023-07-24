@@ -10,15 +10,15 @@ const PK_addr1 = process.env.PK_addr1;
 //, `0x${PK_addr2}`, `0x${PK_addr3}`
 
 module.exports = {
-  defaultNetwork: "goerli",
+  defaultNetwork: "localhost",
   networks: {
-    goerli: {
-      url: `${RPC_URL}`,
-      accounts: [`0x${PK_addr1}`],
-    },
-    // localhost: {
-    //   url: "http://127.0.0.1:8545"
+    // goerli: {
+    //   url: `${RPC_URL}`,
+    //   accounts: [`0x${PK_addr1}`],
     // },
+    localhost: {
+      url: "http://127.0.0.1:8545"
+    },
   },
   solidity: {
     compilers: [
