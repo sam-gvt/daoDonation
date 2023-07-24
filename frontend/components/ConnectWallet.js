@@ -10,13 +10,15 @@ import {
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import {createPublicClient, http } from 'viem';
 import { goerli, hardhat } from 'viem/chains';
+import { useEffect, useState } from 'react';
 
 
 
 
-export async function ConnectWallet() {
+export function ConnectWallet() {
   const { address, isConnected } = useAccount()
 
+  const [data, setData] = useState(null)
   const { connect, isConnecting } = useConnect({
     connector: new InjectedConnector(),
   })
@@ -27,9 +29,15 @@ export async function ConnectWallet() {
     transport: http()
 })
 
-  const data = await client.getBalance({ 
-    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
-  })
+useEffect(() => {
+  const data = async () => {
+    setData(await client.getBalance({ 
+      address: address,
+    }))
+  } 
+  data()
+}, [address])
+
 
   console.log(data);
  
