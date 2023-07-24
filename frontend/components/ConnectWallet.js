@@ -9,6 +9,8 @@ import {
 
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
 import {createPublicClient, http } from 'viem';
+import { goerli, hardhat } from 'viem/chains';
+
 
 
 
