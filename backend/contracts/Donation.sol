@@ -10,11 +10,10 @@ contract Donation is VoteMajority {
     constructor(address[] memory _admins) VoteMajority(_admins) {}
 
 
-    event AssociationRegistered(address associationAddress);
     event DonationToAssociation(address donor, address addrAssociation, uint mount);
 
 
-    // ################# Association ###################76
+    // ################# Association #####################
 
     function setAssociationForm(
         string memory _name,
@@ -25,7 +24,11 @@ contract Donation is VoteMajority {
         ) external {
 
         require(associations[msg.sender].isRegister, "You are not register");
-        associations[msg.sender] = InfosAssociation(_name, _activity, _goal, _localisation, _officialWebsite, true);
+        associations[msg.sender].name = _name;
+        associations[msg.sender].activity = _activity;
+        associations[msg.sender].goal = _goal;
+        associations[msg.sender].localisation = _localisation;
+        associations[msg.sender].officialWebsite = _officialWebsite;
    
     }
 
@@ -38,18 +41,18 @@ contract Donation is VoteMajority {
         string memory _localisation,
         string memory _officialWebsite
     ) external {
-        require(!associations[_addr].isRegister, "You are already register");
+        require(!associations[_addr].onStandBy, "Your request is pending");
         require(associationsOnStandby.length < 100, 'Too many requests please try later');
+        require(keccak256(bytes(_name)) != keccak256(bytes('')) &&
+                keccak256(bytes(_activity)) != keccak256(bytes('')) &&
+                keccak256(bytes(_goal)) != keccak256(bytes('')) &&
+                keccak256(bytes(_localisation)) != keccak256(bytes('')) &&
+                keccak256(bytes(_officialWebsite)) != keccak256(bytes('')), 'Empty fields are not allowed');
+        
         associationsOnStandby.push(_addr);
-        associations[_addr] = InfosAssociation(_name, _activity, _goal, _localisation, _officialWebsite, true);
+        associations[_addr] = InfosAssociation(_addr, _name, _activity, _goal, _localisation, _officialWebsite, false, true);
     }
 
-
-     
-
-    function AuditsAssociations() external  onlyRole(ADMIN_ROLE) {
-
-    }
 
 
     // ################# USER ###################
@@ -59,7 +62,21 @@ contract Donation is VoteMajority {
 
         for (uint i = 0; i < associationAccepted.length; i++) {
             address addressAssociation = associationAccepted[i];
-            _associations[i] = _fetchAssociation(addressAssociation);
+            if(associations[addressAssociation].isRegister){
+                _associations[i] = _fetchAssociation(addressAssociation);
+            }
+        }
+
+        return _associations;
+    }
+
+    function getAllAssociationsOnStandBy() external view returns(InfosAssociation[] memory) {
+        InfosAssociation[] memory _associations = new InfosAssociation[](associationsOnStandby.length);
+
+        for (uint i = 0; i < associationsOnStandby.length; i++) {
+            address addressAssociation = associationsOnStandby[i];
+            _associations[i] = _fetchAssociationOnStandBy(addressAssociation);
+            
         }
 
         return _associations;
@@ -85,60 +102,36 @@ contract Donation is VoteMajority {
         // Récupérez les associations à partir de l'index de départ
         for (uint i = 0; i < numAssociations; i++) {
             address addressAssociation = associationAccepted[startIndex + i];
-            _associations[i] = _fetchAssociation(addressAssociation);
+
+            if(associations[addressAssociation].isRegister){
+                _associations[i] = _fetchAssociation(addressAssociation);
+            }
         }
 
         return _associations;
     }
 
     function _fetchAssociation(address _address) public view returns (InfosAssociation memory) {
+        require( associations[_address].isRegister, 'Address is unknown or banned');
+        return associations[_address];
+    }
+
+    function _fetchAssociationOnStandBy(address _address) public view returns (InfosAssociation memory) {
+        require( associations[_address].onStandBy, 'Address is unknown');
         return associations[_address];
     }
 
    
 
-    // En tant qu'utilisateur, je veux pouvoir consulter les informations financières 
-    // d'une association, y compris ses revenus et ses dépenses. Les associations devront 
-    // justifier toutes leurs actions financière sur la DAO chaque mois, si non effectué mise ne pause 
-    // des donations pour l’association et si 6 mois sans justificatif exclusion de l’association.
-    // + fiche association
-    // + Infos projets associations
-    // ???/ Accès aux rapports
-    function getDetailAssociation (address _address) external {
-
-    }
-
-
-    function donate(address payable _address, uint mount) external payable {
+ 
+    function donate(address payable _address) external payable {
         require(msg.value > 0, "Not enough funds provided");
-        require(associations[_address].isRegister, 'Address is unknown');
+        require(associations[_address].isRegister, 'Address is unknown or banned');
 
         (bool sent, ) = _address.call{value: msg.value}("");
         require(sent, "Failed to send Ether");
 
-        emit DonationToAssociation(msg.sender, _address, mount);
+        emit DonationToAssociation(msg.sender, _address, msg.value);
     }
-
-    function myDonationsHistory() external {
-        // retracer les events ?
-
-    }
-
-
-    // ################# Pour les donateurs ###################
-
-    function commentAssociation () external {
-
-    }
-
-    // En tant qu'utilisateur, je veux pouvoir recommander de nouvelles 
-    // associations à ajouter à la DAO grâce à l’accès personnalisé à la page des candidatures
-    //  associatives et la possibilité de mettre 
-    //  un vote positif ou négatif sur chaque association.
-
-
-
-
-
 
 }
