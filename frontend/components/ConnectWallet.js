@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 export function ConnectWallet() {
   const { address, isConnected } = useAccount()
 
-  const [data, setData] = useState(null)
+  const [data, setData] = useState(undefined)
   const { connect, isConnecting } = useConnect({
     connector: new InjectedConnector(),
   })
@@ -40,6 +40,7 @@ useEffect(() => {
 
 
   console.log(data);
+  console.log(data.formatted);
  
   if (isConnected)
     return (
