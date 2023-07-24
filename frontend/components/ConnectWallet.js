@@ -8,19 +8,28 @@ import {
 } from '@chakra-ui/react';
 
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
+import {createPublicClient, http } from 'viem';
 
 
-export function ConnectWallet() {
+
+export async function ConnectWallet() {
   const { address, isConnected } = useAccount()
 
   const { connect, isConnecting } = useConnect({
     connector: new InjectedConnector(),
   })
   const { disconnect } = useDisconnect()
-  const { data, isError, isLoading } = useBalance({
-    address: address,
+
+  const client = createPublicClient({ 
+    chain: goerli,
+    transport: http()
+})
+
+  const data = await client.getBalance({ 
+    address: '0xA0Cf798816D4b9b9866b5330EEa46a18382f251e',
   })
 
+  console.log(data);
  
   if (isConnected)
     return (
