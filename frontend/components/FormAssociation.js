@@ -15,7 +15,7 @@ import { prepareWriteContract, writeContract } from '@wagmi/core';
 import Contract from '../public/Donation.json'
 
 
-const FormAssociation = ({addressAccount}) => {
+const FormAssociation = ({addressAccount, isRegister}) => {
     
     const toast = useToast();
     const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
@@ -50,6 +50,36 @@ const FormAssociation = ({addressAccount}) => {
             })
         }}
 
+        const setForm = async (_name, _activity, _goal, _localisation, _website) => {
+            try {
+                
+                const { request } = await prepareWriteContract({
+                    address: contractAddress,
+                    abi: Contract.abi,
+                    functionName: 'setAssociationForm',
+                    args: [_name, _activity, _goal, _localisation, _website],
+    
+                  })
+                await writeContract(request)
+    
+                toast({
+                    title: 'Successful request',
+                    status: 'success',
+                    duration: 3000,
+                    position: 'top',
+                    isClosable: true,
+                })
+    
+            } catch (err){
+                console.log(err);
+                toast({
+                    title: 'Oops, an error has occurred !',
+                    status: 'error',
+                    duration: 3000,
+                    isClosable: true,
+                })
+            }}
+
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(
@@ -59,18 +89,34 @@ const FormAssociation = ({addressAccount}) => {
             e.target.localisation.value,
             e.target.website.value,
         );
-        register(
-            e.target.name.value,
-            e.target.activity.value,
-            e.target.goal.value,
-            e.target.localisation.value,
-            e.target.website.value,
-        )
+
+        if(isRegister) {
+            setForm(e.target.name.value,
+                e.target.activity.value,
+                e.target.goal.value,
+                e.target.localisation.value,
+                e.target.website.value,)
+        } else {
+            register(
+                e.target.name.value,
+                e.target.activity.value,
+                e.target.goal.value,
+                e.target.localisation.value,
+                e.target.website.value,
+            )
+        }
+ 
     }
     
     return (
         <>
-        <Heading textAlign="center" marginTop="70px">Association registration request</Heading>
+        <Heading textAlign="center" marginTop="70px">
+        { !isRegister ? (
+            'Association registration request'
+        ) : (
+            'Association, set Form'
+        )}
+        </Heading>
 
         <form onSubmit={handleSubmit}>
         <FormControl isRequired w='70%' m='auto' pt='50px'>

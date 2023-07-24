@@ -9,7 +9,7 @@ describe("Donation Contract Test", function () {
 
     async function deployDonationFixture() {
   
-     const [owner, otherAccount, addr1, addr2, addr3] = await ethers.getSigners();
+     const [owner, otherAccount, addr1, addr2, addr3, addr4] = await ethers.getSigners();
 
      admins = [owner, addr1, addr2];
 
@@ -17,7 +17,7 @@ describe("Donation Contract Test", function () {
 
      await hardhatContract.waitForDeployment();
 
-     return {hardhatContract, owner, otherAccount, addr1, addr2, addr3};
+     return {hardhatContract, owner, otherAccount, addr1, addr2, addr3, addr4};
     }
 
 
@@ -118,7 +118,7 @@ describe("Donation Contract Test", function () {
             }
             expect((await _hardhatContract.sessions(_otherAccount)).name).to.equal('');
             expect((await _hardhatContract.sessions(_otherAccount)).totalVotes).to.equal(0);
-            expect((await _hardhatContract.sessions(_otherAccount)).majorityThreshold).to.equal(admins.length);
+            expect((await _hardhatContract.sessions(_otherAccount)).majorityThreshold).to.equal(admins.length+1);
             expect((await _hardhatContract.sessions(_otherAccount)).isActive).to.equal(false);
          })
 
@@ -195,13 +195,15 @@ describe("Donation Contract Test", function () {
         let _addr1;
         let _addr2;
         let _addr3;
+        let _addr4;
         beforeEach(async () => {
-            const {hardhatContract, otherAccount, addr1, addr2, addr3} = await loadFixture(deployDonationFixture);
+            const {hardhatContract, otherAccount, addr1, addr2, addr3, addr4} = await loadFixture(deployDonationFixture);
             _hardhatContract = hardhatContract;
             _otherAccount = otherAccount;
             _addr1 = addr1;
             _addr2 = addr2;
             _addr3 = addr3;
+            _addr4 = addr4;
             
             // register
             await _hardhatContract.registerNewAssociation(
@@ -299,6 +301,33 @@ describe("Donation Contract Test", function () {
 
         })
 
+        it('I add admin', async function() {
+            // create session
+            await _hardhatContract.createSession(_addr3, 'admin');
+            // vote admin
+            for(i = 0; i < admins.length; i ++) {
+                await _hardhatContract.connect(admins[i]).vote(_addr3, true);
+            }
+            expect(await _hardhatContract.hasRole('0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775', _addr3)).to.equal(true);
+        })
+
+
+        it('I can not add an admin who already exists', async function() {
+            // create session
+            await _hardhatContract.createSession(_addr3, 'admin');
+            // vote admin
+            for(i = 0; i < admins.length; i ++) {
+                await _hardhatContract.connect(admins[i]).vote(_addr3, true);
+            }
+            await expect(_hardhatContract.createSession(_addr3, 'admin')).to.be.revertedWith("Admin already register");
+        })
+        
+        it('You can not add several admins at once', async function() {
+            // create session
+            await _hardhatContract.createSession(_addr3, 'admin');
+            // vote admin
+            await expect(_hardhatContract.createSession(_addr4, 'admin')).to.be.revertedWith("There can only be one admin request at a time");
+        })
         it('I can see all associations register', async function() {
             expect((await _hardhatContract.getAllAssociations()).length).to.equal(2);
         })

@@ -1,8 +1,8 @@
 async function main() {
   const [owner, addr1, addr2] = await ethers.getSigners();
 
-  console.log("Deploying contracts with the admins :", owner.address, addr1.address, addr2.address);
-  let admins = [owner, addr1, addr2];
+  console.log("Deploying contracts with the admins :", owner.address, addr1.address);
+  let admins = [owner, addr1];
   const donation = await ethers.deployContract("Donation", [admins]);
 
   

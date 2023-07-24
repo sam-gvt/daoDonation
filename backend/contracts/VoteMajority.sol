@@ -27,6 +27,8 @@ contract VoteMajority is AccessControlEnumerable {
 
     mapping(address => InfosAssociation) public associations;
     address[] public associationsOnStandby;
+    address public adminOnStandBy;
+
     address payable [] public associationAccepted;
 
 
@@ -78,6 +80,11 @@ contract VoteMajority is AccessControlEnumerable {
         else if(keccak256(bytes(_name)) == keccak256(bytes('revokeAssociation'))) {
             require(associations[_addressSession].isRegister, "Association is not register");
         }
+        else if(keccak256(bytes(_name)) == keccak256(bytes('admin'))) {
+            require(!hasRole(ADMIN_ROLE, _addressSession), "Admin already register");
+            require(adminOnStandBy == address(0), "There can only be one admin request at a time");
+            adminOnStandBy = _addressSession;
+        }
 
         sessions[_addressSession] = Session(_name, 0, totalAdmins, true);
     }
@@ -118,6 +125,8 @@ contract VoteMajority is AccessControlEnumerable {
         if(result) {
             if(sessionName == keccak256(bytes('admin'))) {
                 _grantRole(ADMIN_ROLE, _addrSession);
+                adminOnStandBy = address(0);
+                totalAdmins ++;
             } else if(sessionName == keccak256(bytes('association'))) {
                 associationAccepted.push(_addrSession);
                 associations[_addrSession].isRegister = true;

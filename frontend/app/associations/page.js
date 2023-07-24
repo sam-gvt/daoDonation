@@ -42,21 +42,15 @@ const Associations = () => {
     return (
         <>
             <ConnectWallet/>
-            { !isConnected && (
+            { !isConnected ? (
                 <Heading textAlign="center" marginTop="70px">Please connect your wallet</Heading>
-            )}
-
-            { (isConnected && isRegister) && (
-                'ok'
-            )}
-
-            { (isConnected && !isRegister) && (
+            ) : (
                 <>
-                <FormAssociation addressAccount={addressAccount}/>
+                <FormAssociation addressAccount={addressAccount} isRegister={isRegister}/>
                 </>
-
-     
             )}
+
+          
 
             
 

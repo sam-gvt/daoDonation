@@ -2,6 +2,7 @@
 import {
   Button,
   IconButton,
+  useToast,
   Box,
   Heading,
   Card,CardHeader, CardBody, CardFooter,
@@ -11,16 +12,19 @@ import {
 } from '@chakra-ui/react';
 import { ConnectWallet } from '@/components/ConnectWallet';
 import Contract from '../public/Donation.json';
-import {createPublicClient, http, parseAbiItem } from 'viem';
+import {AbiEncodingArrayLengthMismatchError, createPublicClient, http, parseAbiItem } from 'viem';
 import { goerli, hardhat } from 'viem/chains';
 import { useState, useEffect } from 'react';
 import {ArrowRightIcon, ArrowLeftIcon} from '@chakra-ui/icons'
-
+import { sendTransaction, prepareSendTransaction } from '@wagmi/core'
+import { parseEther } from 'viem'
 
 
 export default function Home() {
 
   const contractAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
+  const toast = useToast();
+
 
   // --------- ASSOCIATIONS -------
   const [isLoading, setIsLoading] = useState(true);
@@ -74,29 +78,31 @@ export default function Home() {
   const donate = (e) => {
     e.preventDefault()
     let amount = e.target.amount.value
-    sendDonation(amount)
+    let addr = listAssociations[indexAssociationToDisplay].addr
+
+    sendDonation(addr,amount)
     
   }
+  
 
-  const sendDonation = async (address) => {
+
+  const sendDonation = async (address, amount) => {
 
     try {
-        const { request } = await prepareWriteContract({
-            address: contractAddress,        
-            abi: Contract.abi,
-            functionName: 'addVoter',
-            args: [address],
-        });
-        await writeContract(request)
+      const config = await prepareSendTransaction({
+        to: address,
+        value: parseEther(amount)
+      })
+       
+      await sendTransaction(config)
 
-        toast({
-            title: 'Voter adds with success',
-            status: 'success',
-            duration: 3000,
-            position: 'top',
-            isClosable: true,
-        })
-        setNewAddressVoterAdd(address);
+      toast({
+        title: 'Thanks, transaction successfully completed',
+        status: 'success',
+        duration: 3000,
+        position: 'top',
+        isClosable: true,
+    })
 
     } catch {
         toast({
@@ -110,7 +116,6 @@ export default function Home() {
     }
     
 }
-console.log(listAssociations);
   
   return (
 
@@ -125,6 +130,7 @@ console.log(listAssociations);
                 <Heading size='md'> {listAssociations[indexAssociationToDisplay].name}</Heading>
               </CardHeader>
               <CardBody>
+                <Text>Its address : {listAssociations[indexAssociationToDisplay].addr}</Text>
                 <Text>Its activity : {listAssociations[indexAssociationToDisplay].activity}</Text>
                 <Text>Its Goal : {listAssociations[indexAssociationToDisplay].goal}</Text>
                 <Text>Its Localisation : {listAssociations[indexAssociationToDisplay].localisation}</Text>
@@ -180,7 +186,7 @@ console.log(listAssociations);
                     <NumberDecrementStepper />
                   </NumberInputStepper>
                 </NumberInput>
-                <Button type='submit'>Donate</Button>
+                <Button mt='15px' colorScheme='green'  type='submit'>Donate</Button>
               </FormControl>
             </form>
             
