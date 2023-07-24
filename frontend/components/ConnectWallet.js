@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react';
 
 import { InjectedConnector } from '@wagmi/core/connectors/injected'
-import {createPublicClient, http } from 'viem';
+import {createPublicClient, http, formatEther } from 'viem';
 import { goerli, hardhat } from 'viem/chains';
 import { useEffect, useState } from 'react';
 
@@ -31,23 +31,22 @@ export function ConnectWallet() {
 
 useEffect(() => {
   const data = async () => {
-    setData(await client.getBalance({ 
+    const value = await client.getBalance({ 
       address: address,
-    }))
+    })
+    setData(formatEther(value) )
   } 
   data()
 }, [address])
 
 
-  console.log(data);
-  console.log(data.formatted);
  
   if (isConnected)
     return (
       <Flex justifyContent="space-between">
         <Box>
         <Text>Connected to {address}</Text>
-        <Text>Balance: {data ? data.formatted : "Loading..."} ethers</Text>
+        <Text>Balance: {data ? data: "Loading..."} ethers</Text>
         
         </Box>
         <Box>
