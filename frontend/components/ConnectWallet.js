@@ -30,13 +30,16 @@ export function ConnectWallet() {
 })
 
 useEffect(() => {
-  const data = async () => {
-    const value = await client.getBalance({ 
-      address: address,
-    })
-    setData(formatEther(value) )
-  } 
-  data()
+  if(isConnected) {
+    const data = async () => {
+      const value = await client.getBalance({ 
+        address: address,
+      })
+      setData(formatEther(value) )
+    } 
+    data()
+  }
+
 }, [address])
 
 
