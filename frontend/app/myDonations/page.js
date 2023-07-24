@@ -10,7 +10,7 @@ import {
 import {createPublicClient, http, parseAbiItem } from 'viem';
 import { goerli, hardhat } from 'viem/chains';
 import { useState, useEffect } from 'react';
-import { MdCheckCircle } from '@chakra-ui/icons'
+import { MdCheckCircle } from "react-icons/md";
 import { ConnectWallet } from '@/components/ConnectWallet';
 
 
@@ -35,8 +35,8 @@ const MyDonation = () => {
         // get all the deposit events 
         const donationsLogs = await client.getLogs({
             event: parseAbiItem('event DonationToAssociation(address donor, address addrAssociation, uint mount)'),
-            // fromBlock: 0n,
-            // toBlock: 'latest' // Pas besoin valeur par défaut
+            fromBlock: 0n,
+            toBlock: 'latest' // Pas besoin valeur par défaut
             
         })
         console.log('logs : ',donationsLogs)
