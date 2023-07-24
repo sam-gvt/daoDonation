@@ -25,7 +25,7 @@ const MyDonation = () => {
 
     
     const client = createPublicClient({ 
-        chain: hardhat,
+        chain: goerli,
         transport: http()
     })
 

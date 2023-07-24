@@ -47,7 +47,7 @@ export default function SimpleSidebar({ children }) {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const client = createPublicClient({ 
-    chain: hardhat,
+    chain: goerli,
     transport: http()
   })
 

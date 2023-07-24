@@ -33,7 +33,7 @@ const Admin = () => {
 
   
     const client = createPublicClient({ 
-      chain: hardhat,
+      chain: goerli,
       transport: http()
     })
     const getIsAdmin = async () => {
@@ -74,7 +74,7 @@ const Admin = () => {
 
   // get associations from contract
   const client2 = createPublicClient({ 
-    chain: hardhat,
+    chain: goerli,
     transport: http()
   })
 

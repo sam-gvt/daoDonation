@@ -36,7 +36,7 @@ export default function Home() {
 
   // get associations from contract
   const client = createPublicClient({ 
-    chain: hardhat,
+    chain: goerli,
     transport: http()
   })
 

@@ -25,7 +25,7 @@ const Session = ({listAssociations, indexAssociationToDisplay, setSeeSession}) =
 
 
     const client = createPublicClient({ 
-        chain: hardhat,
+        chain: goerli,
         transport: http()
     })
 
