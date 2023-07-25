@@ -34,6 +34,10 @@ const { chains, publicClient } = configureChains(
     
   ]
 );
+
+console.log('publicClient : ',publicClient);
+console.log('apikey : ', API_KEY_INFURA);
+
 const config = createConfig({
   autoConnect: false,
   publicClient,
