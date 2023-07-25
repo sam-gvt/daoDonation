@@ -22,7 +22,7 @@ import { configureChains } from '@wagmi/core'
 const API_KEY_INFURA = process.env.API_KEY_INFURA;
 
 const { chains, publicClient } = configureChains(
-  [chain.goerli],
+  [goerli],
   [
     // jsonRpcProvider({
     //   rpc: () => ({
