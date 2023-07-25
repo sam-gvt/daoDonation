@@ -30,7 +30,7 @@ const { chains, publicClient } = configureChains(
     //   }),
     // }),
     infuraProvider({ apiKey: API_KEY_INFURA }),
-    publicProvider(),
+    //publicProvider(),
     
   ]
 );
