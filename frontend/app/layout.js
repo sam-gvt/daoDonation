@@ -29,7 +29,7 @@ const { chains, publicClient } = configureChains(
     //     http: "http://127.0.0.1:8545"
     //   }),
     // }),
-    infuraProvider({ apiKey: API_KEY_INFURA }),
+    infuraProvider({ apiKey: '66ce5470b74847dc9d86c8a1bc3bd422' }),
     //publicProvider(),
     
   ]
