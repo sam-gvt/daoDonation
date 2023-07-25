@@ -37,9 +37,9 @@ All test are realized by state process to control function, expect, event, and r
 
 Deployed contract Goerli address: https://goerli.etherscan.io/address/
 
-Video : 
+Video : https://www.dropbox.com/s/btgbq5fz76oecl9/charityBridge-GrandvincentSam.mp4?dl=0
 
-Vercel app :
+Vercel app : https://dao-donation.vercel.app/
 
 
 ## Author
