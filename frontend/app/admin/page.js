@@ -91,23 +91,23 @@ const Admin = () => {
   const addAdmin = async (_addr) => {
     try {
         
-        // const { request } = await prepareWriteContract({
-        //     address: contractAddress,
-        //     abi: Contract.abi,
-        //     functionName: 'createSession',
-        //     args: [_addr, 'admin'],
+        const { request } = await prepareWriteContract({
+            address: contractAddress,
+            abi: Contract.abi,
+            functionName: 'createSession',
+            args: [_addr, 'admin'],
 
-        //   })
-        // await writeContract(request)
+          })
+        await writeContract(request)
 
 
-const { request } = await publicClient.simulateContract({
-  account,
-  address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
-  abi: wagmiAbi,
-  functionName: 'mint',
-})
-await walletClient.writeContract(request)
+// const { request } = await publicClient.simulateContract({
+//   account,
+//   address: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+//   abi: wagmiAbi,
+//   functionName: 'mint',
+// })
+// await walletClient.writeContract(request)
 
         toast({
             title: 'Successful',
