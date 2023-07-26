@@ -2,38 +2,33 @@ const { ethers } = require("hardhat")
 
 async function main() {
 
-    [owner, addr1, addr2, addr3, addr4] = await ethers.getSigners();
+    [addr1, addr2] = await ethers.getSigners();
 
-    const _hardhatContract = await hre.ethers.getContractAt("Donation", "0x5FbDB2315678afecb367f032d93F642f64180aa3")
+    console.log("addr1 :", addr1);
+    console.log("addr2 :", addr2);
+
+    const _hardhatContract = await hre.ethers.getContractAt("Donation", "0x5B6CA4CfEfD31FC3903B23A7e62BbF1A45267313")
     // register
     await _hardhatContract.registerNewAssociation(
-        addr2.address,
-        'name',
-        'activity',
-        'goal',
-        'localisation',
-        'officialWebsite'
-    );
-    await _hardhatContract.registerNewAssociation(
-        addr3.address,
-        'name',
-        'activity',
-        'goal',
-        'localisation',
-        'officialWebsite'
-    );
-    await _hardhatContract.registerNewAssociation(
-        addr4.address,
-        'name',
-        'activity',
-        'goal',
-        'localisation',
-        'officialWebsite'
+        addr1.address,
+        'chien',
+        'animal',
+        'sauver les chiens',
+        'paris',
+        'https://chien.fr'
     );
 
-    await _hardhatContract.connect(owner).createSession(addr2, 'association')
-    await _hardhatContract.connect(owner).createSession(addr3, 'association')
-    await _hardhatContract.connect(owner).createSession(addr4, 'association')
+    await _hardhatContract.registerNewAssociation(
+        addr2.address,
+        'Foret',
+        'Environnemental',
+        'planter des arbres',
+        'Amazonie',
+        'https://foret.com'
+    );
+
+    await _hardhatContract.connect(addr1).createSession(addr1, 'association')
+    await _hardhatContract.connect(addr2).createSession(addr2, 'association')
 
 
     }

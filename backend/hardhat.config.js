@@ -4,7 +4,7 @@ require('dotenv').config()
 
 const RPC_URL = process.env.RPC_URL;
 const PK_addr1 = process.env.PK_addr1;
-// const PK_addr2 = process.env.PK_addr2;
+const PK_addr2 = process.env.PK_addr2;
 // const PK_addr3 = process.env.PK_addr3;
 
 //, `0x${PK_addr2}`, `0x${PK_addr3}`
@@ -14,7 +14,7 @@ module.exports = {
   networks: {
     goerli: {
       url: `${RPC_URL}`,
-      accounts: [`0x${PK_addr1}`],
+      accounts: [`0x${PK_addr1}`, `0x${PK_addr2}`],
     },
     // localhost: {
     //   url: "http://127.0.0.1:8545"
